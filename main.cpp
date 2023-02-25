@@ -1,7 +1,11 @@
-#include "nnlib.hpp"
+#include "nnlib/nnlib.h"
 
 int main()
 {
-    std::cout << "Hello World" << std::endl;
+    NeuralNetwork MyNet(2, 0.7);
+    MyNet.Display();
+    MyNet.AddLayer(4);
+    MyNet.AddLayer(1);
+    MyNet.Display();
     return 0;
 }

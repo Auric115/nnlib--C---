@@ -1,9 +1,12 @@
-#ifndef _NNLIB_HPP_
-#define _NNLIB_HPP_
+#ifndef _NNLIB_H_
+#define _NNLIB_H_
 
 #include <iostream>
+#include <iomanip>
 #include <cmath>
 #include <cassert>
+
+#define DEBUG true
 
 #define MAXLAYERS 4
 #define MAXNEURONS 4
@@ -14,23 +17,39 @@ class Mesh;
 class Layer;
 class NeuralNetwork;
 
-double squish(double x) { return std::tanh(x); }
-double dSquish(double x) { return (1.0 - (x * x)); }
+double squish(double x);
+double dSquish(double x);
 
-double init_weight() { return ((double)rand()) / ((double)RAND_MAX); }
+double init_weight();
+
+class Connection
+{
+public:
+    Connection();
+    double weight_d;
+};
+
+class Neuron
+{
+public:
+    Neuron();
+
+private:
+};
 
 class Mesh
 {
 public:
-    Mesh();
+    Mesh(Layer *layerIn, Layer *layerOut);
+    void Display();
 
 private:
-    Layer *layerIn_c;
-    Layer *layerOut_c;
+    Layer *layerIn_m_cP;
+    Layer *layerOut_m_cP;
     Connection *connects_m_cpA[MAXNEURONS][MAXNEURONS];
-    double bias_m_d[MAXNEURONS][MAXNEURONS];
-    unsigned numInputs = 0;
-    unsigned numOutputs = 0;
+    double bias_m_d[MAXNEURONS];
+    unsigned nodesIn_m_u;
+    unsigned nodesOut_m_u;
 };
 
 class Layer
@@ -38,6 +57,7 @@ class Layer
 public:
     Layer(unsigned nodes);
     void Display();
+    unsigned GetNum() { return numNeurons; }
 
 private:
     Neuron *nodes_m_cpA[MAXNEURONS];
@@ -60,7 +80,7 @@ private:
     unsigned topology_m_uA[MAXLAYERS];
     double inputs_dA[MAXNEURONS];
     double outputs_dA[MAXNEURONS];
-    unsigned numLayers_m_u;
+    unsigned numLayers_m_u = 0;
     double learningRate_m_d;
 };
 

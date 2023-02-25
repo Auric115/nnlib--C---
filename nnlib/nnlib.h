@@ -26,7 +26,10 @@ class Connection
 {
 public:
     Connection();
+
     double weight_d;
+
+private:
 };
 
 class Neuron
@@ -41,13 +44,16 @@ class Mesh
 {
 public:
     Mesh(Layer *layerIn, Layer *layerOut);
+
     void Display();
 
 private:
     Layer *layerIn_m_cP;
     Layer *layerOut_m_cP;
     Connection *connects_m_cpA[MAXNEURONS][MAXNEURONS];
+
     double bias_m_d[MAXNEURONS];
+
     unsigned nodesIn_m_u;
     unsigned nodesOut_m_u;
 };
@@ -56,14 +62,17 @@ class Layer
 {
 public:
     Layer(unsigned nodes);
+
     void Display();
     unsigned GetNum() { return numNeurons; }
 
 private:
     Neuron *nodes_m_cpA[MAXNEURONS];
+
     double intakes_d[MAXNEURONS];
     double results_d[MAXNEURONS];
     double delta_m_d[MAXNEURONS];
+
     unsigned numNeurons;
 };
 
@@ -71,15 +80,18 @@ class NeuralNetwork
 {
 public:
     NeuralNetwork(unsigned nodes, double learningRate);
+
     void AddLayer(unsigned nodes);
     void Display();
 
 private:
     Layer *layers_m_cpA[MAXLAYERS];
     Mesh *mesh_m_cpA[MAXLAYERS - 1];
+
     unsigned topology_m_uA[MAXLAYERS];
     double inputs_dA[MAXNEURONS];
     double outputs_dA[MAXNEURONS];
+
     unsigned numLayers_m_u = 0;
     double learningRate_m_d;
 };

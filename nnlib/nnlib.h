@@ -22,35 +22,18 @@ double dSquish(double x);
 
 double init_weight();
 
-class Connection
-{
-public:
-    Connection();
-
-    double weight_d;
-
-private:
-};
-
-class Neuron
-{
-public:
-    Neuron();
-
-private:
-};
-
 class Mesh
 {
 public:
     Mesh(Layer *layerIn, Layer *layerOut);
 
     void Display();
+    void FeedForward();
 
 private:
     Layer *layerIn_m_cP;
     Layer *layerOut_m_cP;
-    Connection *connects_m_cpA[MAXNEURONS][MAXNEURONS];
+    double weights_m_d2A[MAXNEURONS][MAXNEURONS];
 
     double bias_m_d[MAXNEURONS];
 
@@ -64,16 +47,12 @@ public:
     Layer(unsigned nodes);
 
     void Display();
-    unsigned GetNum() { return numNeurons; }
-
-private:
-    Neuron *nodes_m_cpA[MAXNEURONS];
+    unsigned GetNum() { return numNeurons_u; }
+    void SetIntakes(double in[MAXNEURONS]);
 
     double intakes_d[MAXNEURONS];
-    double results_d[MAXNEURONS];
     double delta_m_d[MAXNEURONS];
-
-    unsigned numNeurons;
+    unsigned numNeurons_u;
 };
 
 class NeuralNetwork
@@ -83,14 +62,19 @@ public:
 
     void AddLayer(unsigned nodes);
     void Display();
+    void Test(double inputs[MAXNEURONS]);
+    void DisplayResults();
+    void Train(double inputs[MAXNEURONS], double outputs[MAXNEURONS]);
+
+    double inputs_dA[MAXNEURONS];
+    double results_dA[MAXNEURONS];
+    double outputs_dA[MAXNEURONS];
 
 private:
     Layer *layers_m_cpA[MAXLAYERS];
     Mesh *mesh_m_cpA[MAXLAYERS - 1];
 
     unsigned topology_m_uA[MAXLAYERS];
-    double inputs_dA[MAXNEURONS];
-    double outputs_dA[MAXNEURONS];
 
     unsigned numLayers_m_u = 0;
     double learningRate_m_d;

@@ -5,6 +5,47 @@ double dSquish(double x) { return (1.0 - (x * x)); }
 
 double init_weight() { return ((double)rand()) / ((double)RAND_MAX); }
 
+void NeuralNetwork::Train(double inputs[MAXNEURONS], double outputs[MAXNEURONS])
+{
+    for (unsigned o = 0; o < topology_m_uA[numLayers_m_u - 1]; o++)
+    {
+        layers_m_cpA[numLayers_m_u - 1]->delta_m_d[o] = ((outputs[o] - results_dA[o]) * dSquish(results_dA[o]));
+    }
+
+    for (unsigned l = numLayers_m_u - 1; l > 0; l--)
+    {
+        mesh
+    }
+}
+
+void NeuralNetwork::DisplayResults()
+{
+    for (unsigned l = 0; l < numLayers_m_u; l++)
+    {
+        std::cout << "Layer " << l << ": ";
+        for (unsigned n = 0; n < topology_m_uA[l]; n++)
+        {
+            std::cout << layers_m_cpA[l]->intakes_d[n] << ' ';
+        }
+        std::cout << std::endl;
+    }
+}
+
+void NeuralNetwork::Test(double inputs[MAXNEURONS])
+{
+    layers_m_cpA[0]->SetIntakes(inputs);
+
+    for (unsigned l = 0; l < numLayers_m_u - 1; l++)
+    {
+        mesh_m_cpA[l]->FeedForward();
+    }
+
+    for (unsigned r = 0; r < topology_m_uA[numLayers_m_u - 1]; r++)
+    {
+        results_dA[r] = layers_m_cpA[numLayers_m_u]->intakes_d[r];
+    }
+}
+
 void NeuralNetwork::Display()
 {
     std::cout << "----- Neural Network -----" << std::fixed << std::setprecision(4) << std::endl;

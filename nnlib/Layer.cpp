@@ -5,6 +5,30 @@ double dSquish(double x) { return (1.0 - (x * x)); }
 
 double init_weight() { return ((double)rand()) / ((double)RAND_MAX); }
 
+void Layer::FeedForward()
+{
+    if (prevLayer_pC != nullptr)
+    {
+        for (unsigned i = 0; i < numNodes_m_u; i++)
+        {
+            intakes_dA[i] = prevLayer_pC->results_dA[i];
+        }
+    }
+
+    double activation;
+    for (unsigned oc = 0; oc < outNodes_m_u; oc++)
+    {
+        activation = 0;
+        for (unsigned ic = 0; ic < numNodes_m_u; ic++)
+        {
+            activation += intakes_dA[ic] * weights_m_d2A[ic][oc];
+        }
+        activation += biases_m_dA[oc];
+        activation = squish(activation);
+        results_dA[oc] = activation;
+    }
+}
+
 void Layer::CreateMesh(unsigned outNodes)
 {
     outNodes_m_u = outNodes;

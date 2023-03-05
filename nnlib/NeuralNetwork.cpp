@@ -1,5 +1,23 @@
 #include "nnlib.h"
 
+void NeuralNetwork::Test(double inputs[MAXNODES])
+{
+    for (unsigned i = 0; i < topology_m_uA[0]; i++)
+    {
+        layers_m_cpA[0]->intakes_dA[i] = inputs[i];
+    }
+
+    for (unsigned l = 0; l < numLayers_m_u; l++)
+    {
+        layers_m_cpA[l]->FeedForward();
+    }
+
+    for (unsigned o = 0; o < topology_m_uA[numLayers_m_u - 1]; o++)
+    {
+        results_m_dA[o] = layers_m_cpA[numLayers_m_u - 1]->intakes_dA[o];
+    }
+}
+
 void NeuralNetwork::AddLayer(unsigned nodes)
 {
     topology_m_uA[numLayers_m_u] = nodes;

@@ -1,5 +1,26 @@
 #include "nnlib.h"
 
+void NeuralNetwork::Train(double inputs[MAXNODES], double outputs[MAXNODES])
+{
+    Test(inputs);
+
+    for (unsigned o = 0; o < topology_m_uA[numLayers_m_u - 1]; o++)
+    {
+        outputs_m_dA[o] = outputs[o];
+    }
+
+    layers_m_cpA[numLayers_m_u - 1]->BackProp(outputs);
+    for (unsigned l = numLayers_m_u - 2; l > 0; l--)
+    {
+        layers_m_cpA[l]->BackProp();
+    }
+
+    for (unsigned l = 0; l < numLayers_m_u - 1; l++)
+    {
+        layers_m_cpA[l]->Update();
+    }
+}
+
 void NeuralNetwork::Test(double inputs[MAXNODES])
 {
     for (unsigned i = 0; i < topology_m_uA[0]; i++)

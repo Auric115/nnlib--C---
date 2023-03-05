@@ -5,6 +5,47 @@ double dSquish(double x) { return (1.0 - (x * x)); }
 
 double init_weight() { return ((double)rand()) / ((double)RAND_MAX); }
 
+void Layer::SetMesh(double weights[MAXNODES][MAXNODES], double biases[MAXNODES])
+{
+    for (unsigned ic = 0; ic < numNodes_m_u; ic++)
+    {
+        for (unsigned oc = 0; oc < outNodes_m_u; oc++)
+        {
+            weights_m_d2A[ic][oc] = weights[ic][oc];
+        }
+    }
+    for (unsigned oc = 0; oc < outNodes_m_u; oc++)
+    {
+        biases_m_dA[oc] = biases[oc];
+    }
+}
+
+void Layer::SaveConnections(std::string filename)
+{
+    std::ofstream outFile;
+
+    outFile.open(filename, std::ios_base::app);
+
+    if (outNodes_m_u > 0 && outFile)
+    {
+        outFile << std::fixed << std::setprecision(6);
+        for (unsigned ic = 0; ic < numNodes_m_u; ic++)
+        {
+            for (unsigned oc = 0; oc < outNodes_m_u; oc++)
+            {
+                outFile << weights_m_d2A[ic][oc] << ' ';
+            }
+            outFile << std::endl;
+        }
+    }
+    for (unsigned oc = 0; oc < outNodes_m_u; oc++)
+    {
+        outFile << biases_m_dA[oc] << ' ';
+    }
+    outFile << std::endl;
+    outFile.close();
+}
+
 void Layer::Update()
 {
     for (unsigned oc = 0; oc < outNodes_m_u; oc++)

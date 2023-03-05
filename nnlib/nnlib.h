@@ -4,12 +4,16 @@
 #include <cmath>
 #include <iostream>
 #include <iomanip>
+#include <string>
+#include <fstream>
 
 #define MAXLAYERS 4
 #define MAXNODES 4
 
 class Layer;
 class NeuralNetwork;
+
+NeuralNetwork *readNetFile(std::string filename);
 
 class Layer
 {
@@ -22,6 +26,8 @@ public:
     void BackProp();                         // calculate the gradient for the prev layer
     void BackProp(double outputs[MAXNODES]); // calculate the gradient for the last hidden layer (to be ran by output layer)
     void Update();                           // adjust this layer's weights and biases by the gradient
+    void SaveConnections(std::string filename);
+    void SetMesh(double weights[MAXNODES][MAXNODES], double biases[MAXNODES]);
 
     Layer *prevLayer_pC = nullptr; // the preceding layer in the network
 
@@ -46,14 +52,17 @@ public:
     void Display();                     // shows the values in the network and display each layer
     void AddLayer(unsigned nodes);      // add a layer to the network, adjust topology
     void Test(double inputs[MAXNODES]); // pass a set of inputs to the network and get an output
-    void Train(                         // given ins & outs, test, backprop and apply to get the network to learn
+    double *Train(                      // given ins & outs, test, backprop and apply to get the network to learn
         double inputs[MAXNODES],
         double outputs[MAXNODES]);
+    void SaveNetwork(std::string filename);
+    void SetLayer(unsigned l, double weights[MAXNODES][MAXNODES], double biases[MAXNODES]);
 
 private:
     Layer *layers_m_cpA[MAXLAYERS];
 
     unsigned topology_m_uA[MAXLAYERS];     // the number of nodes in each layer
+    double inputs_m_dA[MAXNODES] = {0.0};  // the most recent inputs to the network
     double results_m_dA[MAXNODES] = {0.0}; // the output of the network given most recent inputs
     double outputs_m_dA[MAXNODES] = {0.0}; // the expected result given most recent input
 

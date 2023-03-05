@@ -1,83 +1,64 @@
 #ifndef _NNLIB_H_
 #define _NNLIB_H_
 
+#include <cmath>
 #include <iostream>
 #include <iomanip>
-#include <cmath>
-#include <cassert>
-
-#define DEBUG true
 
 #define MAXLAYERS 4
-#define MAXNEURONS 4
+#define MAXNODES 4
 
-class Connection;
-class Neuron;
-class Mesh;
 class Layer;
 class NeuralNetwork;
-
-double squish(double x);
-double dSquish(double x);
-
-double init_weight();
-
-class Mesh
-{
-public:
-    Mesh(Layer *layerIn, Layer *layerOut);
-
-    void Display();
-    void FeedForward();
-
-private:
-    Layer *layerIn_m_cP;
-    Layer *layerOut_m_cP;
-    double weights_m_d2A[MAXNEURONS][MAXNEURONS];
-
-    double bias_m_d[MAXNEURONS];
-
-    unsigned nodesIn_m_u;
-    unsigned nodesOut_m_u;
-};
 
 class Layer
 {
 public:
-    Layer(unsigned nodes);
+    Layer(unsigned nodes, double lr); // initialize learning rate, number of nodes
 
-    void Display();
-    unsigned GetNum() { return numNeurons_u; }
-    void SetIntakes(double in[MAXNEURONS]);
+    void Display();                          // display all values to the console
+    void CreateMesh(unsigned outNodes);      // initialize weights & biases & outnodes, grads = 0;
+    void FeedForward();                      // take results of previous layer and apply this layer's weights and biases
+    void BackProp();                         // calculate the gradient for the prev layer
+    void BackProp(double outputs[MAXNODES]); // calculate the gradient for the last hidden layer (to be ran by output layer)
+    void Update();                           // adjust this layer's weights and biases by the gradient
 
-    double intakes_d[MAXNEURONS];
-    double delta_m_d[MAXNEURONS];
-    unsigned numNeurons_u;
+    Layer *prevLayer_pC = nullptr; // the preceding layer in the network
+
+    double intakes_dA[MAXNODES] = {0.0};   // the values that enter this layer [numNodes]
+    double results_dA[MAXNODES] = {0.0};   // the values that leave this layer [outNodes]
+    double gradients_dA[MAXNODES] = {0.0}; // the step by which each weight should be adjusted [outNodes]
+
+private:
+    double weights_m_d2A[MAXNODES][MAXNODES]; // the mesh weights [numNodes][outNodes]
+    double biases_m_dA[MAXNODES];             // the biases applied to the values [outNodes]
+
+    unsigned numNodes_m_u = 0; // the number of nodes in this layer
+    unsigned outNodes_m_u = 0; // the number of nodes in the next layer
+    double lr_m_d = 0;         // the learning rate of the network
 };
 
 class NeuralNetwork
 {
 public:
-    NeuralNetwork(unsigned nodes, double learningRate);
+    NeuralNetwork(unsigned inodes, double lr); // initialize the first layer of the network, learning rate
 
-    void AddLayer(unsigned nodes);
-    void Display();
-    void Test(double inputs[MAXNEURONS]);
-    void DisplayResults();
-    void Train(double inputs[MAXNEURONS], double outputs[MAXNEURONS]);
-
-    double inputs_dA[MAXNEURONS];
-    double results_dA[MAXNEURONS];
-    double outputs_dA[MAXNEURONS];
+    void Display();                     // shows the values in the network and display each layer
+    void AddLayer(unsigned nodes);      // add a layer to the network, adjust topology
+    void Test(double inputs[MAXNODES]); // pass a set of inputs to the network and get an output
+    void Train(                         // given ins & outs, test, backprop and apply to get the network to learn
+        double inputs[MAXNODES],
+        double outputs[MAXNODES]);
 
 private:
     Layer *layers_m_cpA[MAXLAYERS];
-    Mesh *mesh_m_cpA[MAXLAYERS - 1];
 
-    unsigned topology_m_uA[MAXLAYERS];
+    unsigned topology_m_uA[MAXLAYERS];     // the number of nodes in each layer
+    double results_m_dA[MAXNODES] = {0.0}; // the output of the network given most recent inputs
+    double outputs_m_dA[MAXNODES] = {0.0}; // the expected result given most recent input
 
-    unsigned numLayers_m_u = 0;
-    double learningRate_m_d;
+    unsigned numLayers_m_u = 0;    // the number of layers
+    double learningRate_m_d = 0.0; // the rate at which the network learns
 };
 
 #endif

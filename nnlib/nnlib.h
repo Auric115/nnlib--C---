@@ -49,14 +49,16 @@ class NeuralNetwork
 public:
     NeuralNetwork(unsigned inodes, double lr); // initialize the first layer of the network, learning rate
 
-    void Display();                     // shows the values in the network and display each layer
-    void AddLayer(unsigned nodes);      // add a layer to the network, adjust topology
-    void Test(double inputs[MAXNODES]); // pass a set of inputs to the network and get an output
-    double *Train(                      // given ins & outs, test, backprop and apply to get the network to learn
+    void Display(bool displayLayers = true, int precision = 6); // shows the values in the network and display each layer
+    void AddLayer(unsigned nodes);                              // add a layer to the network, adjust topology
+    void Test(double inputs[MAXNODES]);                         // pass a set of inputs to the network and get an output
+    double *Train(                                              // given ins & outs, test, backprop and apply to get the network to learn
         double inputs[MAXNODES],
         double outputs[MAXNODES]);
     void SaveNetwork(std::string filename);
     void SetLayer(unsigned l, double weights[MAXNODES][MAXNODES], double biases[MAXNODES]);
+
+    double getAverageError() { return ((timesTrained_m_u > 0) ? (totalError_m_d / (double)timesTrained_m_u) : (0.0)); }
 
 private:
     Layer *layers_m_cpA[MAXLAYERS];
@@ -68,6 +70,8 @@ private:
 
     unsigned numLayers_m_u = 0;    // the number of layers
     double learningRate_m_d = 0.0; // the rate at which the network learns
+    double totalError_m_d = 0.0;
+    unsigned timesTrained_m_u = 0;
 };
 
 #endif

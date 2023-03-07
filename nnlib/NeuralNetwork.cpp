@@ -54,6 +54,14 @@ double *NeuralNetwork::Train(double inputs[MAXNODES], double outputs[MAXNODES])
     }
 
     double *results = results_m_dA;
+    double err = 0.0;
+    for (unsigned r = 0; r < topology_m_uA[numLayers_m_u - 1]; r++)
+    {
+        err += abs(results[r] - outputs[r]);
+    }
+    totalError_m_d += (err / topology_m_uA[numLayers_m_u - 1]);
+    timesTrained_m_u++;
+
     return results;
 }
 
@@ -85,9 +93,9 @@ void NeuralNetwork::AddLayer(unsigned nodes)
     numLayers_m_u++;
 }
 
-void NeuralNetwork::Display()
+void NeuralNetwork::Display(bool displayLayers /*= true*/, int precision /*= 6*/)
 {
-    std::cout << "------------ Neural Network ------------" << std::fixed << std::setprecision(6) << std::endl;
+    std::cout << "------------ Neural Network ------------" << std::fixed << std::setprecision(precision) << std::endl;
     std::cout << std::setw(12) << "Topology: ";
     for (unsigned l = 0; l < numLayers_m_u; l++)
     {
@@ -95,6 +103,7 @@ void NeuralNetwork::Display()
     }
     std::cout << std::endl;
     std::cout << std::setw(12) << "Learning: " << learningRate_m_d << std::setw(MAXNODES / 10 + 8) << std::endl;
+    std::cout << std::setw(12) << "RA Error: " << ((timesTrained_m_u > 0) ? (totalError_m_d / (double)timesTrained_m_u) : (0.0)) << std::setw(MAXNODES / 10 + 8) << std::endl;
     std::cout << std::endl;
     std::cout << std::setw(12) << "Inputs: ";
     for (unsigned i = 0; i < topology_m_uA[0]; i++)
@@ -116,13 +125,17 @@ void NeuralNetwork::Display()
     std::cout << std::endl;
     std::cout << std::endl;
 
-    for (unsigned l = 0; l < numLayers_m_u; l++)
+    if (displayLayers)
     {
-        std::cout << "  ------------- Layer: " << l << " -------------  " << std::endl;
-        layers_m_cpA[l]->Display();
+
+        for (unsigned l = 0; l < numLayers_m_u; l++)
+        {
+            std::cout << "  ------------- Layer: " << l << " -------------  " << std::endl;
+            layers_m_cpA[l]->Display();
+            std::cout << std::endl;
+        }
         std::cout << std::endl;
     }
-    std::cout << std::endl;
 }
 
 NeuralNetwork::NeuralNetwork(unsigned inodes, double lr)

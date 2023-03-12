@@ -19,7 +19,7 @@ int main()
 
     if (data)
     {
-        while (std::getline(data, line) && (i <= 1000000))
+        while (std::getline(data, line) && (i <= 1000))
         {
             std::stringstream ss(line);
 
@@ -29,10 +29,10 @@ int main()
             {
                 myNet.Train(ins, outs);
 
-                if (i++ % 2000 == 0)
+                if (i++ % 10 == 0)
                 {
                     std::cout << "Trial: " << i << std::endl;
-                    myNet.Display(false, 10);
+                    myNet.Display(true, 10);
                 }
             }
         }

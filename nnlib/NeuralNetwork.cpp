@@ -70,7 +70,7 @@ void NeuralNetwork::Test(double inputs[MAXNODES])
     for (unsigned i = 0; i < topology_m_uA[0]; i++)
     {
         layers_m_cpA[0]->intakes_dA[i] = inputs[i];
-        inputs_m_dA[i] = inputs_m_dA[i];
+        inputs_m_dA[i] = inputs[i];
     }
 
     for (unsigned l = 0; l < numLayers_m_u; l++)
